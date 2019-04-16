@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
-public class MainGUI extends JFrame implements Runnable{
+public class GUI3 extends JFrame implements Runnable {
 	private static final Dimension IDEAL_MAIN_DIMENSION = new Dimension(800, 400);
 
 	private static Font font = new Font(Font.MONOSPACED, Font.BOLD, 20);
@@ -51,15 +51,15 @@ public class MainGUI extends JFrame implements Runnable{
 	/**
 	 * This instance is used in the inner classes for different action listeners.
 	 */
-	private MainGUI instance = this;
+	private GUI3 instance = this;
 
 	/**
 	 * Initial status of for the start button.
 	 */
 	private boolean stop = true;
-	private Panneau panneau;
+	private AdufPanel panneau;
 	
-	public MainGUI(String title) {
+	public GUI3(String title) {
 		super(title);
 		init();
 		
@@ -99,10 +99,11 @@ public class MainGUI extends JFrame implements Runnable{
 		change.addActionListener(new ChangeAction());
 		control.add(change);
 
+
 		contentPane.add(BorderLayout.NORTH, control);
 
 		
-		panneau= new Panneau();
+		panneau= new AdufPanel();
 		panneau.setPreferredSize(IDEAL_MAIN_DIMENSION);
 		
 		contentPane.add(BorderLayout.SOUTH, panneau);
@@ -175,7 +176,6 @@ public class MainGUI extends JFrame implements Runnable{
 		setVisible(false);
 		
 }
-
 	
 	/**
 	 * Defines what to do for each time unit (by default 1 second) : it increments the chronometer
@@ -198,7 +198,9 @@ public class MainGUI extends JFrame implements Runnable{
 	}
 	
 	public static void main(String[] args) {
-		MainGUI simulation = new MainGUI("Social Simulation");
+		GUI3 simulation = new GUI3("Social Simulation");
 		
 	}
+
+
 }

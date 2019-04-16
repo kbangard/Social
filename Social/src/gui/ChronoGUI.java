@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
-public class MainGUI extends JFrame implements Runnable{
+public class ChronoGUI extends JFrame implements Runnable {
 	private static final Dimension IDEAL_MAIN_DIMENSION = new Dimension(800, 400);
 
 	private static Font font = new Font(Font.MONOSPACED, Font.BOLD, 20);
@@ -30,13 +30,9 @@ public class MainGUI extends JFrame implements Runnable{
 	 * The core functional part : the chronometer.
 	 */
 	private Chronometer chronometer = new Chronometer();
-	private AvatarPanel ap= new AvatarPanel();
-
 
 	private JButton startButton = new JButton(" Start ");
 	private JButton clearButton = new JButton(" Clear ");
-	private JButton change= new JButton("Changer Avatar");
-
 
 	private JLabel hourLabel = new JLabel("Hour:");
 	private JLabel minuteLabel = new JLabel("Minute:");
@@ -51,21 +47,19 @@ public class MainGUI extends JFrame implements Runnable{
 	/**
 	 * This instance is used in the inner classes for different action listeners.
 	 */
-	private MainGUI instance = this;
+	private ChronoGUI instance = this;
 
 	/**
 	 * Initial status of for the start button.
 	 */
 	private boolean stop = true;
-	private Panneau panneau;
-	
-	public MainGUI(String title) {
+
+	public ChronoGUI(String title) {
 		super(title);
 		init();
-		
 	}
-		
-	public void init() {
+
+	private void init() {
 		updateValues();
 
 		Container contentPane = getContentPane();
@@ -94,28 +88,16 @@ public class MainGUI extends JFrame implements Runnable{
 		clearButton.setFont(font);
 		clearButton.addActionListener(new ClearAction());
 		control.add(clearButton);
-		
-		change.setFont(font);
-		change.addActionListener(new ChangeAction());
-		control.add(change);
 
 		contentPane.add(BorderLayout.NORTH, control);
 
-		
-		panneau= new Panneau();
-		panneau.setPreferredSize(IDEAL_MAIN_DIMENSION);
-		
-		contentPane.add(BorderLayout.SOUTH, panneau);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
-		setLocationRelativeTo(null);
 		setVisible(true);
 		setPreferredSize(IDEAL_MAIN_DIMENSION);
 		setResizable(false);
-		
-			
 	}
-	
+
 	private void updateValues() {
 		// This part is for textual time printing.
 		CyclicCounter hour = chronometer.getHour();
@@ -128,7 +110,28 @@ public class MainGUI extends JFrame implements Runnable{
 		secondValue.setText(second.toString() + " ");
 
 	}
-	
+
+
+	/**
+	 * Defines what to do for each time unit (by default 1 second) : it increments the chronometer
+	 */
+	@Override
+	public void run() {
+		while (!stop) {
+			try {
+				Thread.sleep(CHRONO_SPEED);
+			} catch (InterruptedException e) {
+				System.out.println(e.getMessage());
+			}
+			chronometer.increment();
+			
+			// Ensure that the chronometer is not stopped during the iteration.
+			if (!stop) {
+				updateValues();
+			}
+		}
+	}
+
 	private class StartStopAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -155,50 +158,9 @@ public class MainGUI extends JFrame implements Runnable{
 		}
 
 	}
-	
-	private class ChangeAction implements ActionListener{
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JFrame f1= new JFrame();
-			f1.setVisible(true);
-			f1.setSize(400, 350);
-			f1.setLocationRelativeTo(null);
-			f1.add(ap);
-			dispose();
-			}
-
-		
-	}
-
-	public void dispose() {
-		setVisible(false);
-		
-}
-
-	
-	/**
-	 * Defines what to do for each time unit (by default 1 second) : it increments the chronometer
-	 */
-	@Override
-	public void run() {
-		while (!stop) {
-			try {
-				Thread.sleep(CHRONO_SPEED);
-			} catch (InterruptedException e) {
-				System.out.println(e.getMessage());
-			}
-			chronometer.increment();
-			
-			// Ensure that the chronometer is not stopped during the iteration.
-			if (!stop) {
-				updateValues();
-			}
-		}		
-	}
-	
 	public static void main(String[] args) {
-		MainGUI simulation = new MainGUI("Social Simulation");
-		
+		new ChronoGUI("Chronometer");
 	}
+
 }
